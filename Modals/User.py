@@ -20,15 +20,13 @@ class Users(Table):
         values = tuple(kwargs.values())
         query = f"INSERT INTO {self.name} ({columns}) VALUES ({placeholders}) RETURNING *;"
         user = await SQL(query, values, True)
-        return User.from_row(user[0])
+        u = User.from_row(user[0])
+        return u
 
     async def get(self, id):
         query = f"SELECT * FROM {self.name} WHERE id = ?;"
         rows = await SQL(query, (id,), fetch=True)
-
-        if not rows:
-            return None
-
+        if not rows: return None
         return User.from_row(rows[0])
 
 USERS = Users()
@@ -52,3 +50,17 @@ class User(Row):
     @classmethod
     def from_row(cls, row):
         return cls(**row)
+
+    def __str__(self):
+        return (
+            f"User("
+            f"id={self.user_id}, "
+            f"name='{self.user_name}', "
+            f"email='{self.user_email}', "
+            f"role='{self.user_role}', "
+            f"avatar='{self.user_avatar}'"
+            f")"
+        )
+    
+    def print(self):
+        print(self.__str__())
