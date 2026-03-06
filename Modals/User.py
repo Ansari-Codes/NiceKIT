@@ -37,7 +37,7 @@ class User(Row):
         email=None, password=None,
         avatar=None, role=None,
         created_at=None, updated_at=None):
-        super().__init__(USERS)
+        super().__init__(USERS, 'user')
         self.user_id = id
         self.user_name = name
         self.user_email = email

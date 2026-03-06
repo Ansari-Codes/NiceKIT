@@ -97,16 +97,20 @@ class Table:
         print(self.__sql__())
 
 class Row:
-    def __init__(self, table, **data):
+    def __init__(self, table, field_prefix=None, **data):
         self.table = table
+        self.field_prefix = field_prefix
+
         for k, v in data.items():
             setattr(self, k, v)
 
     def _prefix(self):
+        if self.field_prefix:
+            return f"{self.field_prefix}_"
         return f"{self.table.name}_"
 
     def _pk_attr(self):
-        return f"{self.table.name}_id"
+        return f"{self._prefix()}id"
 
     def _col(self, attr):
         prefix = self._prefix()
@@ -117,35 +121,45 @@ class Row:
     async def update(self, **kwargs):
         set_parts = []
         params = []
+
         for attr, value in kwargs.items():
             column = self._col(attr)
             set_parts.append(f"{column}=?")
             params.append(value)
             setattr(self, attr, value)
+
         set_clause = ", ".join(set_parts)
+
         pk_attr = self._pk_attr()
         pk_val = getattr(self, pk_attr)
+
         params.append(pk_val)
+
         sql = f"""
         UPDATE {self.table.name}
         SET {set_clause}
         WHERE id=?
         """
+
         return await SQL(sql, tuple(params), fetch=False)
 
     async def delete(self):
         pk_attr = self._pk_attr()
         pk_val = getattr(self, pk_attr)
+
         sql = f"""
         DELETE FROM {self.table.name}
         WHERE id=?
         """
+
         return await SQL(sql, (pk_val,), fetch=False)
 
     def get_dict(self):
         prefix = self._prefix()
         result = {}
+
         for k, v in self.__dict__.items():
             if k.startswith(prefix):
                 result[self._col(k)] = v
+
         return result
