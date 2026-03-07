@@ -1,7 +1,7 @@
 from DB.db import SQL
 from typing import Literal, List
 from app import DEV
-from utils import escsql
+from Core.utils import escsql, randomstr, rnd
 
 COL_TYPES = ["DATETIME", "INTEGER", "TEXT"]
 TABLES = []
@@ -163,3 +163,85 @@ class Row:
                 result[self._col(k)] = v
 
         return result
+
+class Variable:
+    def __init__(self, value, name=None, on_change=None):
+        self._value = value
+        self._name = name
+        self._group = None
+        self._on_change = on_change or (lambda x: x)
+
+    def set(self, value):
+        self._value = value
+        return self._on_change(self._value)
+
+    def on_change(self, func):
+        self._on_change = func
+
+    @property
+    def value(self):
+        return self._value
+
+    @property
+    def name(self):
+        return self._name
+
+    def set_name(self, n):
+        self._name = n
+
+    @property
+    def group(self):
+        return self._group
+
+    def __str__(self):
+        return f"{self._name}({self._value})"
+
+    def __repr__(self):
+        return str(self)
+
+
+class VGroup:
+    def __init__(self, name=None):
+        self._name = name or "group"
+        self._variables = {}
+
+    @property
+    def name(self):
+        return self._name
+
+    def add_var(self, var: Variable):
+        name = var.name
+
+        if name is None:
+            name = f"n_{len(self._variables)}"
+            var.set_name(name)
+
+        if name in self._variables:
+            raise Exception(
+                f"VGroup('{self._name}') already contains variable '{name}'"
+            )
+
+        var._group = self
+        self._variables[name] = var
+
+        return self
+
+    def remove_var(self, name):
+        if name not in self._variables:
+            raise Exception(
+                f"VGroup('{self._name}') has no variable '{name}'"
+            )
+
+        var = self._variables.pop(name)
+        var._group = None
+        return self
+
+    def __getattr__(self, item):
+        if item in self._variables:
+            return self._variables[item]
+        raise AttributeError(f"{self._name} has no variable '{item}'")
+
+    def __str__(self):
+        vars_str = ", ".join(str(v) for v in self._variables.values())
+        return f"{self._name}({vars_str})"
+
