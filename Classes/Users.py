@@ -1,12 +1,12 @@
 from DB.db import SQL
-from Modals.Base import Table, Column, Row
+from Classes.Base import Table, Column, Row, Response
 
 class Users(Table):
     def __init__(self) -> None:
         super().__init__("users", [
             Column("id").int().primary().auto_inc(),
-            Column("name").text().not_null(),
-            Column("email").text().not_null(),
+            Column("name").text().unique().not_null(),
+            Column("email").text().unique().not_null(),
             Column("password").text().not_null(),
             Column("avatar").text(),
             Column("role").text().default("user"),
@@ -15,13 +15,40 @@ class Users(Table):
         ])
 
     async def add_user(self, **kwargs):
-        columns = ', '.join(kwargs.keys())
-        placeholders = ', '.join(['?' for _ in kwargs])
+        result = Response()
+        for col in self.columns:
+            if col.required and col.name not in kwargs:
+                result.errors[col.name] = "Field is required."
+        for col in self.columns:
+            if col.unique_ and col.name in kwargs:
+                if not await self.is_unique(kwargs[col.name], col.name):
+                    result.errors[col.name] = f"Value Already Exists!"
+        if not result.success: return result
+        columns = ", ".join(kwargs.keys())
+        placeholders = ", ".join(["?" for _ in kwargs])
         values = tuple(kwargs.values())
-        query = f"INSERT INTO {self.name} ({columns}) VALUES ({placeholders}) RETURNING *;"
-        user = await SQL(query, values, True)
-        u = User.from_row(user[0])
-        return u
+        query = f"""
+        INSERT INTO {self.name} ({columns})
+        VALUES ({placeholders})
+        RETURNING *;
+        """
+        user_row = await SQL(query, values, True)
+        result.response = User.from_row(user_row[0])
+        return result
+
+    async def login(self, identifier: str, password: str):
+        result = Response()
+        query = f"""
+        SELECT * FROM {self.name}
+        WHERE (name = ? OR email = ?) AND password = ?
+        LIMIT 1;
+        """
+        rows = await SQL(query, (identifier, identifier, password), fetch=True)
+        if not rows:
+            result.errors['login'] = "Invalid identifier or password."
+            return result
+        result.response = User.from_row(rows[0])
+        return result
 
     async def get(self, id):
         query = f"SELECT * FROM {self.name} WHERE id = ?;"

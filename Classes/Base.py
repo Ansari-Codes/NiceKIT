@@ -1,5 +1,5 @@
 from DB.db import SQL
-from typing import Literal, List
+from typing import Literal, List, Any, Dict
 from app import DEV
 from Core.utils import escsql, randomstr, rnd
 
@@ -12,20 +12,26 @@ class Column:
     def __init__(self, name) -> None:
         self.name = name.strip().lower()
         self._sql = [f"{self.name}"]
+        self.required = False
+        self.unique_ = False
+        self.type_ = None
 
     def unique(self):
         if 'UNIQUE' in self._sql: return self
         self._sql.append("UNIQUE")
+        self.unique_ = True
         return self
 
     def not_null(self):
         if 'NOT NULL' in self._sql: return self
         self._sql.append("NOT NULL")
+        self.required = True
         return self
     
     def type(self, type: Literal["DATETIME", "INTEGER", "TEXT"]):
         if type in self._sql: return self
         self._sql.append(type.upper().strip())
+        self.type_ = type
         return self
     
     def text(self):
@@ -77,6 +83,16 @@ class Table:
     def __sql__(self):
         sql = ',\n\t'.join([c.__sql__() for c in self.columns])
         return f"""CREATE TABLE IF NOT EXISTS {self.name} (\n\t{sql}\n);"""
+
+    async def is_unique(self, item, field: str):
+        col = next((c for c in self.columns if c.name == field), None)
+        if not col:
+            raise SQLErr(f"Column '{field}' does not exist in table '{self.name}'")
+        if not col.unique_:
+            raise SQLErr(f"Column '{field}' is not marked UNIQUE")
+        query = f"SELECT 1 FROM {self.name} WHERE {field} = ? LIMIT 1;"
+        rows = await SQL(query, (item,), fetch=True)
+        return len(rows) == 0
 
     async def create(self):
         if DEV: print(f"Creating {self.name}!")
@@ -199,7 +215,6 @@ class Variable:
     def __repr__(self):
         return str(self)
 
-
 class VGroup:
     def __init__(self, name=None):
         self._name = name or "group"
@@ -213,7 +228,7 @@ class VGroup:
         name = var.name
 
         if name is None:
-            name = f"n_{len(self._variables)}"
+            name = f"v{len(self._variables)}"
             var.set_name(name)
 
         if name in self._variables:
@@ -221,7 +236,7 @@ class VGroup:
                 f"VGroup('{self._name}') already contains variable '{name}'"
             )
 
-        var._group = self
+        var._group = self # type:ignore
         self._variables[name] = var
 
         return self
@@ -245,3 +260,18 @@ class VGroup:
         vars_str = ", ".join(str(v) for v in self._variables.values())
         return f"{self._name}({vars_str})"
 
+class Response:
+    def __init__(self, response:None | List | Dict | Any = None, errors:None|dict=None) -> None:
+        self.response = response or {}
+        self.errors = errors or {}
+    
+    @property
+    def success(self):
+        return not self.errors
+
+    def __str__(self) -> str:
+        return f"""
+-----------
+SUCCESS:\n\t{self.success}\nERROR:\n\t{self.errors}\nRESPONSE: \n\t{self.response}
+-----------
+    """

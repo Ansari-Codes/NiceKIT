@@ -28,10 +28,3 @@ Files:
 4. **ui.py**: Custom modification of standard ui widgets of nicegui to provide functional structure instead of object based.
 5. **utils.py**: Different utilities
 
-# Preferred cases:
-
-For classes: Pascal Case
-For files: Pascal Case
-For Backend Functions: snake case
-For Frontend/UI Functions: Pascal Case
-For utils: Camel Case
