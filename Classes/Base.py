@@ -182,21 +182,17 @@ class Row:
 
 class Variable:
     def __init__(self, value, name=None, on_change=None):
-        self._value = value
+        self.value = value
         self._name = name
         self._group = None
         self._on_change = on_change or (lambda x: x)
 
     def set(self, value):
-        self._value = value
-        return self._on_change(self._value)
+        self.value = value
+        return self._on_change(self.value)
 
     def on_change(self, func):
         self._on_change = func
-
-    @property
-    def value(self):
-        return self._value
 
     @property
     def name(self):
@@ -208,9 +204,9 @@ class Variable:
     @property
     def group(self):
         return self._group
-
+    
     def __str__(self):
-        return f"{self._name}({self._value})"
+        return f"{self._name}({self.value})"
 
     def __repr__(self):
         return str(self)
@@ -221,7 +217,7 @@ class VGroup:
         self._variables = {}
 
     @property
-    def name(self):
+    def group_name(self):
         return self._name
 
     def add_var(self, var: Variable):
@@ -267,7 +263,7 @@ class Response:
     
     @property
     def success(self):
-        return not self.errors
+        return not (self.errors and all([bool(v) for v in self.errors.values()]))
 
     def __str__(self) -> str:
         return f"""

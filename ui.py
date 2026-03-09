@@ -21,7 +21,7 @@ def RawRow(): return nui.element().classes("flex flex-row")
 def Center(): return nui.element( ).classes("flex justify-center items-center" )
 def Footer(config: dict|None = None): return nui.footer(**(config or {}))
 def Card(align: Literal['start', 'end', 'center', 'baseline', 'stretch']|None = None ):
-    return nui.card(align_items=align).classes("bg-card-l dark:bg-card-d")
+    return nui.card(align_items=align).classes("bg-card-l dark:bg-card-d gap-1 p-1")
 def CardSec(): return nui.card_section()
 def CardAct(): return nui.card_actions()
 
@@ -137,7 +137,7 @@ def Notify(
         position:Literal['top-left', 'top-right', 'bottom-left', 
                          'bottom-right', 'top', 'bottom', 'left', 
                          'right', 'center'
-                        ]='bottom-left',
+                        ]='bottom',
         close_button='✖', 
         **kwargs
     ): nui.notify(message, position=position, close_button=close_button, **kwargs)

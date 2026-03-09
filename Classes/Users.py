@@ -19,11 +19,12 @@ class Users(Table):
         for col in self.columns:
             if col.required and col.name not in kwargs:
                 result.errors[col.name] = "Field is required."
+        if not result.success:return result
         for col in self.columns:
             if col.unique_ and col.name in kwargs:
                 if not await self.is_unique(kwargs[col.name], col.name):
                     result.errors[col.name] = f"Value Already Exists!"
-        if not result.success: return result
+        if not result.success:return result
         columns = ", ".join(kwargs.keys())
         placeholders = ", ".join(["?" for _ in kwargs])
         values = tuple(kwargs.values())

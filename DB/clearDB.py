@@ -5,7 +5,7 @@ import asyncio
 
 async def CreateTables():
     for t in TABLES:
-        await t.create()
+        await t.clear()
 
 if __name__ == "__main__":
     print("[initDB] Creating tables")

@@ -20,12 +20,11 @@ class LoginData(VGroup):
         sc = Response()
         if not self.identifier.__str__().strip():
             sc.errors["identifier"] = "Identifier is required!"
-            if "identifier" in self.error_labels:
-                self.error_labels["identifier"].set_text(sc.errors)
         if not self.password.__str__().strip():
             sc.errors["password"] = "Password is required!"
-            if "password" in self.error_labels:
-                self.error_labels["password"].set_text(sc.errors['password'])
+        for field in sc.errors:
+            if field in self.error_labels:
+                self.error_labels[field].set_text(sc.errors[field])
         return sc
 
     def get_data(self):
@@ -62,10 +61,10 @@ class SignupData(VGroup):
         sc.errors["email"] = None
         sc.errors["password"] = None
         sc.errors["confirm"] = None
-        name = str(self.name).strip()
-        email = str(self.email).strip()
-        password = str(self.password).strip()
-        confirm = str(self.confirm).strip()
+        name = str(self.name.value).strip().lower()
+        email = str(self.email.value).strip().lower()
+        password = str(self.password.value).strip()
+        confirm = str(self.confirm.value).strip()
         if not name:
             sc.errors["name"] = "Name is required!"
         elif not verifyUsername(name):
@@ -83,13 +82,13 @@ class SignupData(VGroup):
         elif confirm != password:
             sc.errors["confirm"] = "Passwords do not match!"
         for field in sc.errors:
-            if sc.errors[field] and (field in self.error_labels):
+            if field in self.error_labels:
                 self.error_labels[field].set_text(sc.errors[field])
         return sc
 
     def get_data(self):
         return {
-            "name": str(self.name),
-            "email": str(self.email),
-            "password": str(self.password),
+            "name": str(self.name.value),
+            "email": str(self.email.value),
+            "password": str(self.password.value),
         }

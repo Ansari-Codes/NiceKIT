@@ -1,6 +1,6 @@
 from datetime import datetime
 from DB.db import SQL
-from Modals.Base import Table, Column, Row
+from Classes.Base import Table, Column, Row
 
 class Sessions(Table):
     def __init__(self) -> None:
