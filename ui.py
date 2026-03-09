@@ -2,8 +2,13 @@ from nicegui import Client
 from app import nui
 from typing import Callable, Literal
 from Classes.Base import Variable
+from urllib.parse import urlencode
 
-def navigate(link:str,new_tab:bool=False):nui.navigate.to(link,new_tab)
+def navigate(link: str, new_tab: bool = False, **params):
+    if params:
+        query = urlencode(params)
+        link = f"{link}?{query}"
+    nui.navigate.to(link, new_tab)
 def Label(text="", model=None, model_configs=None):
     lbl = nui.label(text)
     if model:
@@ -21,7 +26,7 @@ def RawRow(): return nui.element().classes("flex flex-row")
 def Center(): return nui.element( ).classes("flex justify-center items-center" )
 def Footer(config: dict|None = None): return nui.footer(**(config or {}))
 def Card(align: Literal['start', 'end', 'center', 'baseline', 'stretch']|None = None ):
-    return nui.card(align_items=align).classes("bg-card-l dark:bg-card-d gap-1 p-1")
+    return nui.card(align_items=align).classes("bg-card-l dark:bg-card-d gap-1 p-3")
 def CardSec(): return nui.card_section()
 def CardAct(): return nui.card_actions()
 

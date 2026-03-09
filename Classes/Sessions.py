@@ -1,6 +1,6 @@
 from datetime import datetime
 from DB.db import SQL
-from Classes.Base import Table, Column, Row
+from Classes.Base import Table, Column, Row, Response
 
 class Sessions(Table):
     def __init__(self) -> None:
@@ -13,21 +13,42 @@ class Sessions(Table):
         ])
     
     async def add_token(self, **kwargs):
+        result = Response()
+        for col in self.columns:
+            if col.required and col.name not in kwargs:
+                result.errors[col.name] = "Field is required."
+        if not result.success:return result
+        for col in self.columns:
+            if col.unique_ and col.name in kwargs:
+                if not await self.is_unique(kwargs[col.name], col.name):
+                    result.errors[col.name] = "Value already exists."
+        if not result.success:
+            return result
         columns = ', '.join(kwargs.keys())
         placeholders = ', '.join(['?' for _ in kwargs])
         values = tuple(kwargs.values())
-        query = f"INSERT INTO {self.name} ({columns}) VALUES ({placeholders}) RETURNING *;"
-        row = await SQL(query, values, fetch=True)
-        if not row:
-            return None
-        return Session.from_row(row[0])
+        query = f"""
+        INSERT INTO {self.name} ({columns})
+        VALUES ({placeholders})
+        RETURNING *;
+        """
+        rows = await SQL(query, values, fetch=True)
+        if not rows:
+            result.errors["database"] = "Insert failed."
+            return result
+        result.response = Session.from_row(rows[0])
+        return result
     
     async def get_session(self, token_or_id):
+        result = Response()
         if isinstance(token_or_id, int): query = f"SELECT * FROM {self.name} WHERE id = ?;"
         else: query = f"SELECT * FROM {self.name} WHERE token = ?;"
         rows = await SQL(query, (token_or_id,), fetch=True)
-        if not rows: return None
-        return Session.from_row(rows[0])
+        if not rows:
+            result.errors["session"] = "Session not found."
+            return result
+        result.response = Session.from_row(rows[0])
+        return result
 
 SESSIONS = Sessions()
 
