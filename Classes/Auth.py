@@ -2,14 +2,6 @@ from Classes.Base import Variable, VGroup, Response
 from Core.utils import verifyMail, verifyPswd, verifyUsername
 
 class LoginData(VGroup):
-    '''
-    .password
-    .identifier
-    .error_labels = {
-        "identifier": Lable(),
-        "password": Lable()
-    }
-    '''
     def __init__(self):
         super().__init__("Login")
         self.add_var(Variable("", "identifier"))
@@ -34,19 +26,6 @@ class LoginData(VGroup):
         }
 
 class SignupData(VGroup):
-    '''
-    .name
-    .email
-    .password
-    .confirm
-    .error_labels = {
-        "name": Lable(),
-        "email": Lable(),
-        "password": Lable(),
-        "confirm": Lable(),
-    }
-    '''
-
     def __init__(self):
         super().__init__("Signup")
         self.add_var(Variable("", "name"))
