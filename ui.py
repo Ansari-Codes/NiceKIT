@@ -1,7 +1,5 @@
-from nicegui import Client
 from app import nui
 from typing import Callable, Literal
-from Classes.Base import Variable
 from urllib.parse import urlencode
 
 def navigate(link: str, new_tab: bool = False, **params):
@@ -86,7 +84,7 @@ def Button(
         config: dict|None = None
     ):
     if not config: config = {}
-    btn = nui.button(text=text, on_click=on_click, **config).props("unelevated push").classes("bg-btn-l dark:bg-btn-d")
+    btn = nui.button(text=text, on_click=on_click, **config)
     if link:
         btn.props(f'href="{link}"')
     if new_tab:
