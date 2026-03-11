@@ -1,5 +1,5 @@
 from nicegui import ui as nui, app as server, context
 
-NAME = "NiceKIT"
+NAME = "NiceGUI-KIT"
 FAVICON = "👌"
 DEV = True

@@ -1,4 +1,4 @@
-from ui import Card, Input, Button, Label, navigate, RawCol, RawRow, Password, Notify, AddSpace, navigate
+from Elements.ui import Card, Input, Button, Label, navigate, RawCol, RawRow, Password, Notify, AddSpace, navigate
 from Core.pages import per_page, Request
 from Classes.Auth import SignupData
 from Backend.Auth.Signup import signup

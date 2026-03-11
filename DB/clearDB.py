@@ -1,13 +1,13 @@
 from Classes.Base import TABLES
-from Classes.Users import USERS
-from Classes.Sessions import SESSIONS
 import asyncio
+# The table class below should be imported to register all the tables
+import Classes.Tables
 
-async def CreateTables():
+async def ClearTables():
     for t in TABLES:
         await t.clear()
 
 if __name__ == "__main__":
-    print("[initDB] Creating tables")
-    asyncio.run(CreateTables())
-    print("[initDB] DataBase Initialized!")
+    print("[clearDB] Clearing tables")
+    asyncio.run(ClearTables())
+    print("[clearDB] Cleared Initialized!")

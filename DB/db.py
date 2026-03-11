@@ -10,6 +10,16 @@ async def INIT_DB():
     return con
 DB = 0
 async def SQL(query, params=(), fetch=False):
+    '''Global function for SQL execution (You can replace this function with custom database logic).
+    
+    Takes:
+    
+    1. Query: The query string, sql code.
+    2. params: The parameters to be passed in the query.
+    3. fetch: Whether to fetch the results or not.
+    
+    **Returns:** List containg dict.
+    '''
     global DB
     con = await INIT_DB()
     DB += 1

@@ -1,6 +1,17 @@
-from Classes.Users import USERS
+from Classes.Tables.Users import USERS
 
 async def signup(data: dict):
+    '''Signup Function. Takes `data`:
+    
+    
+    >>> data = {
+    >>>     "name": <VARIABLE>,
+    >>>     "email: <VARIABLE>,
+    >>>     "password: <VARIABLE>
+    >>> }
+    
+    **Returns:** \n\tClasses.Base.Response
+    '''
     name = data.get("name")
     email = data.get("email")
     pswd = data.get("password")

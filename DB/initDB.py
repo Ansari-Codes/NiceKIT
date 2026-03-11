@@ -1,7 +1,7 @@
 from Classes.Base import TABLES
-from Classes.Users import USERS
-from Classes.Sessions import SESSIONS
 import asyncio
+# The table class below should be imported to register all the tables
+import Classes.Tables
 
 async def CreateTables():
     for t in TABLES:
