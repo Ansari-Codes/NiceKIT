@@ -1,5 +1,5 @@
 from Elements.ui import Label, DarkMode
-from Core.utils import thecode
+from Utils.misc import thecode
 
 async def create_home(request):
     user_id = request.cookies.get("user_id")

@@ -1,5 +1,6 @@
-from Elements.ui import Card, Input, Button, Label, navigate, RawCol, RawRow, Password, Notify, AddSpace, navigate
-from Core.pages import per_page, Request
+from Elements.ui import Card, Input, Button, DarkMode, Label, navigate, RawCol, RawRow, Password, Notify, AddSpace, navigate
+from Utils.pages import per_page, Request
+from Utils.misc import thecode
 from Classes.Pages.Auth.Signup import SignupData
 from Backend.Auth.Signup import signup
 from Pages import SESSION_SET
@@ -39,7 +40,8 @@ async def sup(widgets, sdata, error_labels, redirect_to):
     finally:
         for w in widgets: w.enable()
 
-async def Signup(redirect_to='/'):
+async def Signup(request, redirect_to='/'):
+    DarkMode(thecode(request.cookies.get("dark", None)))
     widgets = []
     error_labels = {}
     per_page().classes("flex justify-center items-center")
@@ -57,5 +59,5 @@ async def Signup(redirect_to='/'):
 
 async def create_signup(request: Request, redirect_to='/'):
     token = request.cookies.get("auth_token")
-    if not token: await Signup(redirect_to)
+    if not token: await Signup(request, redirect_to)
     else: navigate(redirect_to)

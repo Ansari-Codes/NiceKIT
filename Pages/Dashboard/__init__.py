@@ -1,5 +1,6 @@
-from Core.pages import Request
-from Elements.ui import Drawer, Div, Button, Label, RawCol, AddSpace, navigate
+from Utils.pages import Request
+from Utils.misc import thecode
+from Elements.ui import Drawer, Div, Button, Label, RawCol, AddSpace, navigate, DarkMode
 from Pages import SESSION_DEL
 from Pages.Dashboard.Home import create_home
 from Pages.Dashboard.Section import create_section
@@ -57,10 +58,8 @@ async def SideDrawer(area, **kwargs):
 
 async def create_dashboard(request: Request, page: str = "dashboard"):
     await app.context.client.connected()
-    token = request.cookies.get("auth_token")
-    user_id = request.cookies.get("user_id")
-    user_name = request.cookies.get("user_name")
     dark = request.cookies.get("dark", None)
+    DarkMode(thecode(request.cookies.get("dark", None)))
     area = Div()
     drawer = await SideDrawer(area, request=request)
     with area:

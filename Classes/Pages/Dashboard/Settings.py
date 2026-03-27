@@ -1,5 +1,5 @@
 from Classes.Base import Variable, VGroup, Response
-from Core.utils import verifyUsername, verifyPswd, verifyMail
+from Utils.misc import verifyUsername, verifyPswd, verifyMail
 
 class SettingsData(VGroup):
     def __init__(self, user_id):

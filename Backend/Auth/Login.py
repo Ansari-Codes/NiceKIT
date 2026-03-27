@@ -13,5 +13,5 @@ async def login(data: dict):
     '''
     identifier = data.get("identifier", "")
     pswd = data.get("password", "")
-    user = await USERS.login(identifier=identifier.value, password=pswd.value)
+    user = await USERS.login(identifier=identifier.value.strip().lower(), password=pswd.value.strip())
     return user

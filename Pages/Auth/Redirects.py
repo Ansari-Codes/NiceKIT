@@ -1,5 +1,5 @@
-from Core.pages import  RedirectResponse, HTMLResponse, Request
-from Core.utils import randomstr
+from Utils.pages import  RedirectResponse, HTMLResponse, Request
+from Utils.misc import randomstr
 from Backend.Auth.Session import save_cookie, delete_cookie
 
 AGE = 15 * 60 * 60 * 24
@@ -22,7 +22,7 @@ async def set_theme_cookie(dark: str, redirect_to: str = '/'):
 async def set_cookie(id: int, name: str, redirect_to: str = '/dashboard'):
     res = RedirectResponse(redirect_to)
     id = int(id)
-    value = randomstr().__str__()
+    value = randomstr(16).__str__()
     try:
         await save_cookie(value, id, AGE)
     except Exception as e:

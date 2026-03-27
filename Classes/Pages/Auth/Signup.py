@@ -1,5 +1,5 @@
 from Classes.Base import Variable, VGroup, Response
-from Core.utils import verifyMail, verifyPswd, verifyUsername
+from Utils.misc import verifyMail, verifyPswd, verifyUsername
 
 class SignupData(VGroup):
     def __init__(self):
@@ -43,7 +43,7 @@ class SignupData(VGroup):
 
     def get_data(self):
         return {
-            "name": str(self.name.value),
-            "email": str(self.email.value),
-            "password": str(self.password.value),
+            "name": self.name,
+            "email": self.email,
+            "password": self.password,
         }

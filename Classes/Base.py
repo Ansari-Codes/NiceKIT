@@ -1,7 +1,7 @@
 from DB.db import SQL
 from typing import Literal, List, Any, Dict
 from app import DEV
-from Core.utils import escsql, randomstr, rnd
+from Utils.misc import escsql, randomstr, rnd
 
 COL_TYPES = ["DATETIME", "INTEGER", "TEXT"]
 TABLES = []

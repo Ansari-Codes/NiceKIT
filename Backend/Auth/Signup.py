@@ -12,8 +12,8 @@ async def signup(data: dict):
     
     **Returns:** \n\tClasses.Base.Response
     '''
-    name = data.get("name")
-    email = data.get("email")
-    pswd = data.get("password")
+    name = data.get("name", "").value.strip().lower()
+    email = data.get("email", "").value.strip().lower()
+    pswd = data.get("password", "").value.strip()
     res = await USERS.add_user(name=name, email=email, password=pswd)
     return res

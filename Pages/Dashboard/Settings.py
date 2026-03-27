@@ -2,7 +2,7 @@ from Elements.ui import Label, Notify, Button, Input, TabArea, Tab, TabPanel, Ta
 from Pages import SESSION_SET, DASHBOARD, THEME_SET
 from Classes.Pages.Dashboard.Settings import SettingsData
 from Backend.Dashboard.Settings import update_settings
-from Core.utils import thecode
+from Utils.misc import thecode
 
 async def input_section(label, model, inps):
     with RawRow().classes("w-full gap-2"):

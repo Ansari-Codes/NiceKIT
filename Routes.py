@@ -1,4 +1,4 @@
-from Core.pages import page
+from Utils.pages import page
 from Pages import *
 
 page(SIGNUP)(create_signup)
