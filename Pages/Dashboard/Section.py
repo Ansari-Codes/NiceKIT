@@ -1,7 +1,7 @@
-from Elements.ui import Label
+from Elements.ui import Label, DarkMode
+from Core.utils import thecode
 
-async def create_section(area, user_id, user_name):
-    area.clear()
-    with area:
-        Label(f"this is simple section")
+async def create_section(request):
+    DarkMode(thecode(request.cookies.get("dark", None)))
+    Label(f"this is simple section")
 

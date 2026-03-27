@@ -13,6 +13,8 @@ def Label(text="", model=None, model_configs=None):
         model_configs = model_configs or {}
         lbl.bind_text(model, target_name='value', **model_configs)
     return lbl
+def DarkMode(dark=None, on_change=lambda x=None:x):
+    return nui.dark_mode(dark, on_change=on_change)
 
 def Div(): return nui.element('Div')
 def Header(): return nui.header(fixed=True, elevated=False)
@@ -29,6 +31,13 @@ def CardSec(): return nui.card_section()
 def CardAct(): return nui.card_actions()
 def Drawer(side: Literal['left', 'right'] = 'left', **kwargs): 
     return nui.drawer(side, **kwargs)
+def TabArea(value= None, on_change: Callable|None=None): 
+    return nui.tabs(value=value, on_change=on_change)
+def Tab(name, label='', icon=''): return nui.tab(name, label, icon)
+def TabPanels(tabs=None, *, value=None, on_change=None, animated=True, keep_alive=True): 
+    return nui.tab_panels(tabs, value=value, on_change=on_change, keep_alive=keep_alive, animated=animated)
+def TabPanel(name): return nui.tab_panel(name)
+def Expansion(): return nui.expansion()
 
 def Link(
         text: str = "",

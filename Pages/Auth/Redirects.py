@@ -14,6 +14,11 @@ def addCookie(res, key, value):
         max_age=AGE
     )
 
+async def set_theme_cookie(dark: str, redirect_to: str = '/'):
+    res = RedirectResponse(redirect_to)
+    addCookie(res, "dark", dark)
+    return res
+
 async def set_cookie(id: int, name: str, redirect_to: str = '/dashboard'):
     res = RedirectResponse(redirect_to)
     id = int(id)
@@ -25,6 +30,7 @@ async def set_cookie(id: int, name: str, redirect_to: str = '/dashboard'):
     addCookie(res, "auth_token", value)
     addCookie(res, "user_id", str(id))
     addCookie(res, "user_name", str(name))
+    addCookie(res, "dark", None)
     return res
 
 async def del_cookie(request:Request):

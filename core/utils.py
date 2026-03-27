@@ -51,3 +51,12 @@ def verifyPswd(password: str) -> bool:
 
 def escsql(s) -> str:
     return str(s).replace("'", "''")
+
+def thecode(dark):
+    parse_map = {
+        "True": True,
+        "False": False,
+        "None": None,
+        None: None
+    }
+    return parse_map.get(dark, None)
