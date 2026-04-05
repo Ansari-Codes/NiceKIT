@@ -30,11 +30,11 @@ lower_side_buttons = {
 functions = {k.lower().strip().replace(' ', '-'):v.get("function") for k,v in {**upper_side_buttons, **lower_side_buttons}.items()}
 
 async def change_page(function, area, kwargs):
-    async def F():pass
+    async def F(**kwargs):pass
     f = function or F
     area.clear()
     with area:
-        await f(**kwargs)
+        await f(area=area, **kwargs)
 
 async def SideDrawer(area, **kwargs):
     d = Drawer().classes("bg-primary")

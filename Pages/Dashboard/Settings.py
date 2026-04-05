@@ -11,7 +11,7 @@ async def input_section(label, model, inps):
     inps.append(inp)
     return inp
 
-async def create_settings(request):
+async def create_settings(area, request):
     # theme
     dark = thecode(request.cookies.get("dark", None))
     theme_controller = DarkMode(dark)
