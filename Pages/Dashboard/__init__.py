@@ -64,6 +64,6 @@ async def create_dashboard(request: Request, page: str = "dashboard"):
     drawer = await SideDrawer(area, request=request)
     with area:
         if page in functions:
-            await functions[page](request) # type:ignore
+            await functions[page](area, request) # type:ignore
         else:
             Label("Error 404 - Page not found!")
